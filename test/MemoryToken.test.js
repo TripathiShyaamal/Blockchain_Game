@@ -1,0 +1,71 @@
+const { assert } = require('chai')
+
+const MemoryToken = artifacts.require('./MemoryToken.sol')
+
+require('chai')
+  .use(require('chai-as-promised'))
+  .should()
+
+contract('Memory Token', (accounts) => {
+  let token //token fetched out of the blockchain
+
+  before(async() => {
+    token = await MemoryToken.deployed() //fetching the token from the blockchain first and then writing tests
+  })
+  
+  describe('deployment', async() => {
+    it('deploys successfully', async() => { //test 1
+      const address = token.address
+      assert.notEqual(address, 0x0)
+      assert.notEqual(address, '')
+      assert.notEqual(address, null)
+      assert.notEqual(address, undefined)
+    })
+
+    it('has a name', async() => { //test 2
+      const name = await token.name()
+      assert.equal(name, 'Memory Token')
+
+    })
+
+    it('has a symbol', async() => { //test 3
+      const symbol = await token.symbol()
+      assert.equal(symbol, 'MEMORY')
+    })
+  })
+
+  describe('token distribution', async() => {
+    let result;
+    it('mints tokens', async() => {
+      await token.mint(accounts[0], 'https://www.token-uri.com/nft') //minting tokens to the first account
+
+      //It should increase the total supply
+      result = await token.totalSupply()
+      assert.equal(result.toString(), '1', 'total supply is correct')
+
+      //It increments owner balance
+      result = await token.balanceOf(accounts[0])
+      assert.equal(result.toString(), '1', 'balanceOf is correct')
+
+      //Token should belong to the owner
+      result = await token.ownerOf('1')
+      assert.equal(result, accounts[0], 'ownerOf is correct')
+      result = await token.tokenOfOwnerByIndex(accounts[0],0)
+
+      //Owner can see all the tokens
+      let balanceOf = await token.balanceOf(accounts[0])
+      let tokenIds = []
+      for(let i = 0; i < balanceOf; i++){
+        let id=await token.tokenOfOwnerByIndex(accounts[0],i) // All the tokens from the account
+        tokenIds.push(id.toString())// Only 1 token will bestored because he person has onloy 1 token
+      }
+      let expected=['1'] //Only 1 token will bestored because he person has onloy 1 token
+      assert.equal(tokenIds.toString(), expected.toString(), 'tokenIds are correct')
+
+      //Token URI is correct
+      let tokenURI = await token.tokenURI('1')// for the first token
+      assert.equal(tokenURI, 'https://www.token-uri.com/nft')
+
+    })
+  })
+})

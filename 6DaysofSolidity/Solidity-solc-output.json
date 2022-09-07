@@ -1,0 +1,27 @@
+{
+    "sources": {
+        "c:/Users/hp/6DaysofSolidity/Solidity.sol": {
+            "ast": {
+                "absolutePath": "c:/Users/hp/6DaysofSolidity/Solidity.sol",
+                "exportedSymbols": {},
+                "id": 2,
+                "nodeType": "SourceUnit",
+                "nodes": [
+                    {
+                        "id": 1,
+                        "literals": [
+                            "solidity",
+                            "^",
+                            "0.5",
+                            ".0"
+                        ],
+                        "nodeType": "PragmaDirective",
+                        "src": "33:23:0"
+                    }
+                ],
+                "src": "33:25:0"
+            },
+            "id": 0
+        }
+    }
+}
